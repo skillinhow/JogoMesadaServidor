@@ -25,6 +25,7 @@ public class Sala {
         this.numJogadores = numJogadores;
         this.duracao = duracao;
         this.players = new LinkedList<>();
+        this.ativa = true;
         idcont++;
     }
 
@@ -46,6 +47,10 @@ public class Sala {
 
     public int getDuracao() {
         return duracao;
+    }
+
+    public void setAtiva(boolean ativa) {
+        this.ativa = ativa;
     }
     
     
