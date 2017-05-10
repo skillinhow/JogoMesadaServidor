@@ -11,12 +11,12 @@ package pbl2servidor;
  */
 public class PBL2Servidor {
 
-    private static testeCLI.Conexao cone;
+    private static Conexao cone;
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        cone = new testeCLI.Conexao(50000);
+        cone = new Conexao(50000);
         cone.start();
         System.out.println("nasceu");
     }
