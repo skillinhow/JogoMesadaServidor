@@ -56,7 +56,7 @@ public class Atendente extends Thread {
 
             System.out.println(x);
 
-            if ((aux[0].equals("E") && Conexao.count == 1)||(aux[0].equals("E") && !ControleSalas.estaAtiva())) {
+            if ((aux[0].equals("E") && Conexao.count == 1) || (aux[0].equals("E") && !ControleSalas.estaAtiva())) {
                 oo.writeObject("C");
                 oo.flush();
 
@@ -74,26 +74,31 @@ public class Atendente extends Thread {
                 oo.writeObject("H");
                 oo.flush();
             }
-            
-            System.out.println("Sala ativa? "+ControleSalas.estaAtiva());
+
+            System.out.println("Sala ativa? " + ControleSalas.estaAtiva());
             boolean cheio = ControleSalas.estaCheia(id);
             while (cheio == false) {
                 cheio = ControleSalas.estaCheia(id);
                 Thread.sleep(1000, 10000);
             }
 
-            Sala salaaux = ControleSalas.buscaSala(id);
-            String pacote = "S@" + salaaux.getDuracao() + "@" + salaaux.getNumJogadores();
-            LinkedList players = salaaux.getPlayers();
-            for (Iterator iterator = players.iterator(); iterator.hasNext();) {
-                Jogadores next = (Jogadores) iterator.next();
-                pacote += "@" + next.getNick() + "@" + next.getIp() + "@" + next.getPorta() + "";
+            x = (String) oi.readObject();
+            aux = x.split("@");
+
+            if (aux[0].equals("PP") && cheio) {
+                Sala salaaux = ControleSalas.buscaSala(id);
+                String pacote = "P2P@" + salaaux.getDuracao() + "@" + salaaux.getNumJogadores();
+                LinkedList players = salaaux.getPlayers();
+                for (Iterator iterator = players.iterator(); iterator.hasNext();) {
+                    Jogadores next = (Jogadores) iterator.next();
+                    pacote += "@" + next.getNick() + "@" + next.getIp() + "@" + next.getPorta() + "";
+                }
+                System.out.println(pacote);
+                salaaux.setAtiva(false);
+                oo.writeObject(pacote);
+                oo.flush();
+                System.out.println("Sala ativa? " + ControleSalas.estaAtiva());
             }
-            System.out.println(pacote);
-            salaaux.setAtiva(false);
-            oo.writeObject(pacote);
-            oo.flush();
-            System.out.println("Sala ativa? "+ControleSalas.estaAtiva());
 
         } catch (IOException ex) {
             System.out.println("Cliente não mandou nada");
