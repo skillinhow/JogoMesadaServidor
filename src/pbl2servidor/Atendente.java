@@ -83,7 +83,7 @@ public class Atendente extends Thread {
             }
 
             Sala salaaux = ControleSalas.buscaSala(id);
-            String pacote = "S@" + salaaux.getDuracao() + "@" + salaaux.getNumJogadores();
+            String pacote = "P2P@" + salaaux.getDuracao() + "@" + salaaux.getNumJogadores();
             LinkedList players = salaaux.getPlayers();
             for (Iterator iterator = players.iterator(); iterator.hasNext();) {
                 Jogadores next = (Jogadores) iterator.next();
