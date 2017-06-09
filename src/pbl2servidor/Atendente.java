@@ -80,28 +80,40 @@ public class Atendente extends Thread {
             do {
                 x = (String) oi.readObject();
                 aux = x.split("@");
+            Sala salaaux = ControleSalas.buscaSala(id);
+            String pacote = "P2P@" + salaaux.getDuracao() + "@" + salaaux.getNumJogadores();
+            LinkedList players = salaaux.getPlayers();
+            for (Iterator iterator = players.iterator(); iterator.hasNext();) {
+                Jogadores next = (Jogadores) iterator.next();
+                pacote += "@" + next.getNick() + "@" + next.getIp() + "@" + next.getPorta() + "";
+            }
+            System.out.println(pacote);
+            salaaux.setAtiva(false);
+            oo.writeObject(pacote);
+            oo.flush();
+            System.out.println("Sala ativa? "+ControleSalas.estaAtiva());
 
-                if (aux[0].equals("R")) {
-                    cheio = ControleSalas.estaCheia(id);
-                    if (cheio) {
-                        System.out.println("sala cheia");
-                        Sala salaaux = ControleSalas.buscaSala(id);
-                        String pacote = "Y@" + salaaux.getDuracao() + "@" + salaaux.getNumJogadores();
-                        LinkedList players = salaaux.getPlayers();
-                        for (Iterator iterator = players.iterator(); iterator.hasNext();) {
-                            Jogadores next = (Jogadores) iterator.next();
-                            pacote += "@" + next.getNick() + "@" + next.getIp() + "@" + next.getPorta() + "";
-                        }
-                        System.out.println(pacote);
-                        salaaux.setAtiva(false);
-                        oo.writeObject(pacote);
-                        oo.flush();
-                        System.out.println("Sala ativa? " + ControleSalas.estaAtiva());
-                    }
-                    System.out.println("Sala não cheia");
-                    oo.writeObject("N");
-                    oo.flush();
-                }
+//                if (aux[0].equals("R")) {
+//                    cheio = ControleSalas.estaCheia(id);
+//                    if (cheio) {
+//                        System.out.println("sala cheia");
+//                        Sala salaaux = ControleSalas.buscaSala(id);
+//                        String pacote = "Y@" + salaaux.getDuracao() + "@" + salaaux.getNumJogadores();
+//                        LinkedList players = salaaux.getPlayers();
+//                        for (Iterator iterator = players.iterator(); iterator.hasNext();) {
+//                            Jogadores next = (Jogadores) iterator.next();
+//                            pacote += "@" + next.getNick() + "@" + next.getIp() + "@" + next.getPorta() + "";
+//                        }
+//                        System.out.println(pacote);
+//                        salaaux.setAtiva(false);
+//                        oo.writeObject(pacote);
+//                        oo.flush();
+//                        System.out.println("Sala ativa? " + ControleSalas.estaAtiva());
+//                    }
+//                    System.out.println("Sala não cheia");
+//                    oo.writeObject("N");
+//                    oo.flush();
+//                }
             } while (!cheio);
 
 //            System.out.println("Sala ativa? " + ControleSalas.estaAtiva());
