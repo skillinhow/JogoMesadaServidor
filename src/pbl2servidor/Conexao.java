@@ -44,8 +44,8 @@ public class Conexao extends Thread {
                 ip = sokt.getInetAddress().getHostAddress();
                 portaCli =  sokt.getPort()+"";
                 new Atendente(sokt, this).start();
-                System.out.println(count);
-                System.out.println(ip);
+                System.out.println("número de conexoes até agora - " +count);
+                System.out.println("ip que se conectou - " + ip);
 
             }
         } catch (IOException ex) {

@@ -45,6 +45,7 @@ public class Atendente extends Thread {
      * executado em cada Thread no sistema.
      *
      */
+    @Override
     public void run() {
 
         try {
@@ -75,38 +76,74 @@ public class Atendente extends Thread {
                 oo.flush();
             }
 
-            System.out.println("Sala ativa? " + ControleSalas.estaAtiva());
-            boolean cheio = ControleSalas.estaCheia(id);
-            while (cheio == false) {
-                cheio = ControleSalas.estaCheia(id);
-                Thread.sleep(1000, 10000);
-            }
+            boolean cheio = false;
+            do {
+                x = (String) oi.readObject();
+                aux = x.split("@");
 
-            x = (String) oi.readObject();
-            aux = x.split("@");
-
-            if (aux[0].equals("PP") && cheio) {
-                Sala salaaux = ControleSalas.buscaSala(id);
-                String pacote = "P2P@" + salaaux.getDuracao() + "@" + salaaux.getNumJogadores();
-                LinkedList players = salaaux.getPlayers();
-                for (Iterator iterator = players.iterator(); iterator.hasNext();) {
-                    Jogadores next = (Jogadores) iterator.next();
-                    pacote += "@" + next.getNick() + "@" + next.getIp() + "@" + next.getPorta() + "";
+                if (aux[0].equals("R")) {
+                    cheio = ControleSalas.estaCheia(id);
+                    if (cheio) {
+                        System.out.println("sala cheia");
+                        Sala salaaux = ControleSalas.buscaSala(id);
+                        String pacote = "Y@" + salaaux.getDuracao() + "@" + salaaux.getNumJogadores();
+                        LinkedList players = salaaux.getPlayers();
+                        for (Iterator iterator = players.iterator(); iterator.hasNext();) {
+                            Jogadores next = (Jogadores) iterator.next();
+                            pacote += "@" + next.getNick() + "@" + next.getIp() + "@" + next.getPorta() + "";
+                        }
+                        System.out.println(pacote);
+                        salaaux.setAtiva(false);
+                        oo.writeObject(pacote);
+                        oo.flush();
+                        System.out.println("Sala ativa? " + ControleSalas.estaAtiva());
+                    }
+                    System.out.println("Sala não cheia");
+                    oo.writeObject("N");
+                    oo.flush();
                 }
-                System.out.println(pacote);
-                salaaux.setAtiva(false);
-                oo.writeObject(pacote);
-                oo.flush();
-                System.out.println("Sala ativa? " + ControleSalas.estaAtiva());
-            }
+            } while (!cheio);
 
+//            System.out.println("Sala ativa? " + ControleSalas.estaAtiva());
+//            boolean cheio = ControleSalas.estaCheia(id);
+//            while (cheio == false) {
+//                cheio = ControleSalas.estaCheia(id);
+//                Thread.sleep(1000, 10000);
+//            }
+//
+//            x = (String) oi.readObject();
+//            aux = x.split("@");
+//
+//            if (aux[0].equals("PP") && cheio) {
+//                Sala salaaux = ControleSalas.buscaSala(id);
+//                String pacote = "P2P@" + salaaux.getDuracao() + "@" + salaaux.getNumJogadores();
+//                LinkedList players = salaaux.getPlayers();
+//                for (Iterator iterator = players.iterator(); iterator.hasNext();) {
+//                    Jogadores next = (Jogadores) iterator.next();
+//                    pacote += "@" + next.getNick() + "@" + next.getIp() + "@" + next.getPorta() + "";
+//                }
+//                System.out.println(pacote);
+//                salaaux.setAtiva(false);
+//                oo.writeObject(pacote);
+//                oo.flush();
+//                System.out.println("Sala ativa? " + ControleSalas.estaAtiva());
+//            }
+//
+//            x = (String) oi.readObject();
+//            System.out.println(x);
+//            aux = x.split("@");
+//            if (aux[0].equals("R")) {
+//                oo.writeObject("S");
+//                oo.flush();
+//            }
         } catch (IOException ex) {
             System.out.println("Cliente não mandou nada");
         } catch (ClassNotFoundException ex) {
             System.out.println("Classe errada animal");
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Atendente.class.getName()).log(Level.SEVERE, null, ex);
         }
+//        catch (InterruptedException ex) {
+//            Logger.getLogger(Atendente.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
     private void criaSala(String maxPlayers, String duracao, String nick) {
@@ -119,7 +156,7 @@ public class Atendente extends Thread {
         LinkedList aux2 = nova.getPlayers();
         aux2.add(aux);
         ControleSalas.salas.add(nova);
-        System.out.println(ControleSalas.salas.size());
+        System.out.println("Quantidade de salas - " + ControleSalas.salas.size());
     }
 
     private void entraSala(String nick) {
