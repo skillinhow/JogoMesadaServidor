@@ -7,9 +7,9 @@ package pbl2servidor;
 
 import java.util.LinkedList;
 
-/**
+/**Classe que define a estrutura de uma sala
  *
- * @author thelu
+ * @author Lucas Cardoso e Emanuel Santana
  */
 public class Sala {
     
@@ -20,6 +20,11 @@ public class Sala {
     private int duracao;
     private boolean ativa;
 
+    /**Construtor da classe
+     * 
+     * @param numJogadores Recebe o número de jogadores
+     * @param duracao Recebe o tempo de duração em meses
+     */
     public Sala(int numJogadores, int duracao) {
         this.id =  idcont;
         this.numJogadores = numJogadores;

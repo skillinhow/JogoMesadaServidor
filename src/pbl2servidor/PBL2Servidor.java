@@ -5,16 +5,14 @@
  */
 package pbl2servidor;
 
-/**
+/** Classe principal do servidor. Inicializa o servidor.
  *
- * @author thelu
+ * @author Lucas Cardoso e Emanuel Santana
  */
 public class PBL2Servidor {
 
     private static Conexao cone;
-    /**
-     * @param args the command line arguments
-     */
+    
     public static void main(String[] args) {
         cone = new Conexao(50000);
         cone.start();

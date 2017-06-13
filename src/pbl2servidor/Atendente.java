@@ -6,18 +6,15 @@ package pbl2servidor;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
- * Classe que controla todo o funcionamento do sistema, recebendo solicitações
- * do cliente e enviando confirmações e erros para o mesmo.
+ * Classe que controla a comunicação dos cliente com o servidor.
  *
- * @author Lucas Cardoso
+ * @author Lucas Cardoso e Emanuel Santana
  */
 public class Atendente extends Thread {
 
@@ -41,8 +38,7 @@ public class Atendente extends Thread {
 
     /**
      * Método principal da Classe Atendente, responsável por realizar o controle
-     * das operações selecionadas pelo usuário. Responsável também pelo código
-     * executado em cada Thread no sistema.
+     * dos clientes que querem jogar e a alocação dos mesmos em salas especificas
      *
      */
     @Override
@@ -80,19 +76,6 @@ public class Atendente extends Thread {
             do {
                 x = (String) oi.readObject();
                 aux = x.split("@");
-//            Sala salaaux = ControleSalas.buscaSala(id);
-//            String pacote = "P2P@" + salaaux.getDuracao() + "@" + salaaux.getNumJogadores();
-//            LinkedList players = salaaux.getPlayers();
-//            for (Iterator iterator = players.iterator(); iterator.hasNext();) {
-//                Jogadores next = (Jogadores) iterator.next();
-//                pacote += "@" + next.getNick() + "@" + next.getIp() + "@" + next.getPorta() + "";
-//            }
-//            System.out.println(pacote);
-//            salaaux.setAtiva(false);
-//            oo.writeObject(pacote);
-//            oo.flush();
-//            System.out.println("Sala ativa? "+ControleSalas.estaAtiva());
-
                 if (aux[0].equals("R")) {
                     cheio = ControleSalas.estaCheia(id);
                     if (cheio) {
@@ -116,48 +99,19 @@ public class Atendente extends Thread {
                 }
             } while (!cheio);
 
-//            System.out.println("Sala ativa? " + ControleSalas.estaAtiva());
-//            boolean cheio = ControleSalas.estaCheia(id);
-//            while (cheio == false) {
-//                cheio = ControleSalas.estaCheia(id);
-//                Thread.sleep(1000, 10000);
-//            }
-//
-//            x = (String) oi.readObject();
-//            aux = x.split("@");
-//
-//            if (aux[0].equals("PP") && cheio) {
-//                Sala salaaux = ControleSalas.buscaSala(id);
-//                String pacote = "P2P@" + salaaux.getDuracao() + "@" + salaaux.getNumJogadores();
-//                LinkedList players = salaaux.getPlayers();
-//                for (Iterator iterator = players.iterator(); iterator.hasNext();) {
-//                    Jogadores next = (Jogadores) iterator.next();
-//                    pacote += "@" + next.getNick() + "@" + next.getIp() + "@" + next.getPorta() + "";
-//                }
-//                System.out.println(pacote);
-//                salaaux.setAtiva(false);
-//                oo.writeObject(pacote);
-//                oo.flush();
-//                System.out.println("Sala ativa? " + ControleSalas.estaAtiva());
-//            }
-//
-//            x = (String) oi.readObject();
-//            System.out.println(x);
-//            aux = x.split("@");
-//            if (aux[0].equals("R")) {
-//                oo.writeObject("S");
-//                oo.flush();
-//            }
         } catch (IOException ex) {
             System.out.println("Cliente não mandou nada");
         } catch (ClassNotFoundException ex) {
             System.out.println("Classe errada animal");
         }
-//        catch (InterruptedException ex) {
-//            Logger.getLogger(Atendente.class.getName()).log(Level.SEVERE, null, ex);
-//        }
     }
 
+    /**Método auxiliar que cria uma sala caso nenhuma esteja disponível
+     * 
+     * @param maxPlayers Recebe o número máximo de jogadores
+     * @param duracao Recebe o tempo da partida em meses
+     * @param nick Recebe o nick o jogador que configurou a sala
+     */
     private void criaSala(String maxPlayers, String duracao, String nick) {
         int numPlayers = Integer.parseInt(maxPlayers);
 
@@ -171,6 +125,10 @@ public class Atendente extends Thread {
         System.out.println("Quantidade de salas - " + ControleSalas.salas.size());
     }
 
+    /**Método auxiliar que adiciona um jogador a uma sala ja existente
+     * 
+     * @param nick Recebe o nick do jogador
+     */
     private void entraSala(String nick) {
         Jogadores jogador = new Jogadores(nick, Conexao.ip, Conexao.portaCli);
         for (Iterator iterator = ControleSalas.salas.iterator(); iterator.hasNext();) {

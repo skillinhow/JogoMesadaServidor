@@ -5,9 +5,9 @@
  */
 package pbl2servidor;
 
-/**
+/**Classe que define a estrutura dos jogadoes
  *
- * @author thelu
+ * @author Lucas Cardoso e Emanuel Santana
  */
 public class Jogadores {
     
@@ -16,6 +16,12 @@ public class Jogadores {
     private String porta;
     private int sala;
 
+    /**Método construtor da classe
+     * 
+     * @param nick Recebe o nick do cliente
+     * @param ip Recebe o ip do cliente
+     * @param porta Recebe a porta do cliente
+     */
     public Jogadores(String nick, String ip, String porta) {
         this.nick = nick;
         this.ip = ip;
